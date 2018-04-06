@@ -5,6 +5,9 @@ declare @resources xml
 --a resource will be deleted if its value is empty
 set @resources='
 <Language>
+  <LocaleResource Name="Admin.Promotions.Discounts.Fields.DiscountLimitation.Hint">
+    <Value>Choose the limitation of discount. This parameter will not be taken into account for recurring products/orders.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Currencies.Fields.CurrencyCode.Hint">
     <Value>The currency code. For a list of currency codes, go to: https://en.wikipedia.org/wiki/ISO_4217</Value>
   </LocaleResource>

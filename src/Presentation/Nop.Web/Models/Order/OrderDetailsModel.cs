@@ -77,7 +77,9 @@ namespace Nop.Web.Models.Order
         
         public IList<OrderNote> OrderNotes { get; set; }
 
-		#region Nested Classes
+        public string InvoiceId { get; set; }
+
+        #region Nested Classes
 
         public partial class OrderItemModel : BaseNopEntityModel
         {

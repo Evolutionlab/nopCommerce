@@ -482,6 +482,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             if (primaryStoreCurrency == null)
                 throw new Exception("Cannot load primary store currency");
 
+            model.InvoiceId = order.InvoiceId;
+
             //order totals
             PrepareOrderTotals(model, order, primaryStoreCurrency);
 

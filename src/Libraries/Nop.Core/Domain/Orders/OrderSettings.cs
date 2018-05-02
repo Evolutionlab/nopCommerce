@@ -152,5 +152,10 @@ namespace Nop.Core.Domain.Orders
         /// Gets or sets a value indicating whether administrators (in impersonation mode) are allowed to buy products marked as "Call for price"
         /// </summary>
         public bool AllowAdminsToBuyCallForPriceProducts { get; set; }
+
+        /// <summary>
+        /// Last used invoice number
+        /// </summary>
+        public string LastPublishedInvoiceNo { get; set; }
     }
 }

@@ -238,7 +238,7 @@ namespace Nop.Services.ExportImport
         {
             foreach (var product in productPictureMetadata)
             {
-                foreach (var picturePath in new[] { product.Picture1Path, product.Picture2Path, product.Picture3Path })
+                foreach (var picturePath in new[] { product.Picture1Path, product.Picture2Path, product.Picture3Path, product.Picture4Path, product.Picture5Path, product.Picture6Path, product.Picture7Path, product.Picture8Path })
                 {
                     if (string.IsNullOrEmpty(picturePath))
                         continue;
@@ -290,7 +290,7 @@ namespace Nop.Services.ExportImport
 
             foreach (var product in productPictureMetadata)
             {
-                foreach (var picturePath in new[] { product.Picture1Path, product.Picture2Path, product.Picture3Path })
+                foreach (var picturePath in new[] { product.Picture1Path, product.Picture2Path, product.Picture3Path, product.Picture4Path, product.Picture5Path, product.Picture6Path, product.Picture7Path, product.Picture8Path })
                 {
                     if (string.IsNullOrEmpty(picturePath))
                         continue;
@@ -511,7 +511,7 @@ namespace Nop.Services.ExportImport
 
         protected virtual void ImportProductAttribute(PropertyManager<ExportProductAttribute> productAttributeManager, Product lastLoadedProduct)
         {
-            if (!_catalogSettings.ExportImportProductAttributes || lastLoadedProduct == null)
+            if (!_catalogSettings.ExportImportProductAttributes || lastLoadedProduct == null || productAttributeManager.IsCaption)
                 return;
 
             var productAttributeId = productAttributeManager.GetProperty("AttributeId").IntValue;
@@ -619,6 +619,9 @@ namespace Nop.Services.ExportImport
 
         private void ImportSpecificationAttribute(PropertyManager<ExportSpecificationAttribute> specificationAttributeManager, Product lastLoadedProduct)
         {
+            if (!_catalogSettings.ExportImportProductSpecificationAttributes || lastLoadedProduct == null || specificationAttributeManager.IsCaption)
+                    return;
+
             var attributeTypeId = specificationAttributeManager.GetProperty("AttributeType").IntValue;
             var allowFiltering = specificationAttributeManager.GetProperty("AllowFiltering").BooleanValue;
             var specificationAttributeOptionId = specificationAttributeManager.GetProperty("SpecificationAttributeOptionId").IntValue;
@@ -1409,6 +1412,11 @@ namespace Nop.Services.ExportImport
                     var picture1 = manager.GetProperty("Picture1")?.StringValue ?? string.Empty;
                     var picture2 = manager.GetProperty("Picture2")?.StringValue ?? string.Empty;
                     var picture3 = manager.GetProperty("Picture3")?.StringValue ?? string.Empty;
+                    var picture4 = manager.GetProperty("Picture4")?.StringValue ?? string.Empty;
+                    var picture5 = manager.GetProperty("Picture5")?.StringValue ?? string.Empty;
+                    var picture6 = manager.GetProperty("Picture6")?.StringValue ?? string.Empty;
+                    var picture7 = manager.GetProperty("Picture7")?.StringValue ?? string.Empty;
+                    var picture8 = manager.GetProperty("Picture8")?.StringValue ?? string.Empty;
 
                     productPictureMetadata.Add(new ProductPictureMetadata
                     {
@@ -1416,6 +1424,11 @@ namespace Nop.Services.ExportImport
                         Picture1Path = picture1,
                         Picture2Path = picture2,
                         Picture3Path = picture3,
+                        Picture4Path = picture4,
+                        Picture5Path = picture5,
+                        Picture6Path = picture6,
+                        Picture7Path = picture7,
+                        Picture8Path = picture8,
                         IsNew = isNew
                     });
 
@@ -1812,6 +1825,16 @@ namespace Nop.Services.ExportImport
             public string Picture2Path { get; set; }
 
             public string Picture3Path { get; set; }
+
+            public string Picture4Path { get; set; }
+
+            public string Picture5Path { get; set; }
+
+            public string Picture6Path { get; set; }
+
+            public string Picture7Path { get; set; }
+
+            public string Picture8Path { get; set; }
 
             public bool IsNew { get; set; }
         }

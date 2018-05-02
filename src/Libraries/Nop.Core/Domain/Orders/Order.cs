@@ -345,6 +345,11 @@ namespace Nop.Core.Domain.Orders
         /// </summary>
         public string CustomOrderNumber { get; set; }
 
+        /// <summary>
+        /// Gets or sets the invoice id for this order
+        /// </summary>
+        public string InvoiceId { get; set; }
+
         #endregion
 
         #region Navigation properties

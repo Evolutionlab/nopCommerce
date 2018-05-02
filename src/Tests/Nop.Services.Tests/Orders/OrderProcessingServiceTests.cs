@@ -5,6 +5,7 @@ using Nop.Core.Caching;
 using Nop.Core.Data;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Configuration;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
@@ -14,9 +15,11 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Plugins;
+using Nop.Data;
 using Nop.Services.Affiliates;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
+using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Discounts;
@@ -94,6 +97,8 @@ namespace Nop.Services.Tests.Orders
         private CustomerSettings _customerSettings;
         private AddressSettings _addressSettings;
         private ICustomNumberFormatter _customNumberFormatter;
+
+        private ISettingService _settingService;
 
         private Store _store;
 
@@ -225,6 +230,8 @@ namespace Nop.Services.Tests.Orders
             _rewardPointService = MockRepository.GenerateMock<IRewardPointService>();
             _currencySettings = new CurrencySettings();
 
+            _settingService = MockRepository.GenerateMock<ISettingService>();
+
             _orderProcessingService = new OrderProcessingService(_orderService, _webHelper,
                 _localizationService, _languageService,
                 _productService, _paymentService, _logger,
@@ -241,7 +248,8 @@ namespace Nop.Services.Tests.Orders
                 _countryService, _stateProvinceService,
                 _shippingSettings, _paymentSettings, _rewardPointsSettings,
                 _orderSettings, _taxSettings, _localizationSettings,
-                _currencySettings, _customNumberFormatter);
+                _currencySettings, _customNumberFormatter, _settingService);
+
         }
         
         [Test]

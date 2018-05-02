@@ -18,6 +18,7 @@ using Nop.Core.Domain.Vendors;
 using Nop.Services.Affiliates;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
+using Nop.Services.Configuration;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Discounts;
@@ -83,6 +84,8 @@ namespace Nop.Services.Orders
         private readonly CurrencySettings _currencySettings;
         private readonly ICustomNumberFormatter _customNumberFormatter;
 
+        private readonly ISettingService _settingService;
+
         #endregion
 
         #region Ctor
@@ -131,6 +134,7 @@ namespace Nop.Services.Orders
         /// <param name="localizationSettings">Localization settings</param>
         /// <param name="currencySettings">Currency settings</param>
         /// <param name="customNumberFormatter">Custom number formatter</param>
+        /// <param name="settingService">Settings service</param>
         public OrderProcessingService(IOrderService orderService,
             IWebHelper webHelper,
             ILocalizationService localizationService,
@@ -171,7 +175,8 @@ namespace Nop.Services.Orders
             TaxSettings taxSettings,
             LocalizationSettings localizationSettings,
             CurrencySettings currencySettings,
-            ICustomNumberFormatter customNumberFormatter)
+            ICustomNumberFormatter customNumberFormatter,
+            ISettingService settingService)
         {
             this._orderService = orderService;
             this._webHelper = webHelper;
@@ -215,6 +220,8 @@ namespace Nop.Services.Orders
             this._localizationSettings = localizationSettings;
             this._currencySettings = currencySettings;
             this._customNumberFormatter = customNumberFormatter;
+
+            this._settingService = settingService;
         }
 
         #endregion
@@ -2128,6 +2135,36 @@ namespace Nop.Services.Orders
 
             //check order status
             CheckOrderStatus(order);
+
+            // Add invoiceId to order, ensure that invoiceId is updated once
+            if (string.IsNullOrEmpty(order.InvoiceId))
+            {
+                order.InvoiceId = GetNewInvoiceNo();
+                _orderSettings.LastPublishedInvoiceNo = order.InvoiceId;
+                // Update settings
+                _settingService.SetSetting<string>("ordersettings.lastpublishedinvoiceno", _orderSettings.LastPublishedInvoiceNo);
+            }
+
+        }
+
+
+        /// <summary>
+        /// Generate a progressive invoice number
+        /// </summary>
+        private string GetNewInvoiceNo()
+        {
+            int counter = Convert.ToInt32(_orderSettings.LastPublishedInvoiceNo.Substring(5));
+            if (!_orderSettings.LastPublishedInvoiceNo.Contains(DateTime.UtcNow.Year.ToString()))
+            {
+                // Reset counter if a new year
+                counter = 1;
+            }
+            else
+            {
+                counter = counter + 1;
+            }
+
+            return string.Format("{0}_{1}", DateTime.UtcNow.Year, counter);
         }
 
         /// <summary>

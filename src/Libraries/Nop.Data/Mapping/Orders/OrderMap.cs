@@ -54,6 +54,8 @@ namespace Nop.Data.Mapping.Orders
                 .WithMany()
                 .HasForeignKey(o => o.PickupAddressId)
                 .WillCascadeOnDelete(false);
+
+            this.Property(o => o.InvoiceId);
         }
     }
 }

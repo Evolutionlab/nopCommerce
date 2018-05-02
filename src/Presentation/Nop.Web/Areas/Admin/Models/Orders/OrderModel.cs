@@ -224,7 +224,9 @@ namespace Nop.Web.Areas.Admin.Models.Orders
         public bool CanPartiallyRefundOffline { get; set; }
         public bool CanVoid { get; set; }
         public bool CanVoidOffline { get; set; }
-        
+
+        public string InvoiceId { get; set; }
+
         #region Nested Classes
 
         public partial class OrderItemModel : BaseNopEntityModel

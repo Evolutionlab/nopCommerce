@@ -132,7 +132,8 @@ namespace Nop.Web.Factories
                     PaymentStatus = order.PaymentStatus.GetLocalizedEnum(_localizationService, _workContext),
                     ShippingStatus = order.ShippingStatus.GetLocalizedEnum(_localizationService, _workContext),
                     IsReturnRequestAllowed = _orderProcessingService.IsReturnRequestAllowed(order),
-                    CustomOrderNumber = order.CustomOrderNumber
+                    CustomOrderNumber = order.CustomOrderNumber,
+                    InvoiceId = order.InvoiceId
                 };
                 var orderTotalInCustomerCurrency = _currencyService.ConvertCurrency(order.OrderTotal, order.CurrencyRate);
                 orderModel.OrderTotal = _priceFormatter.FormatPrice(orderTotalInCustomerCurrency, true, order.CustomerCurrencyCode, false, _workContext.WorkingLanguage);
@@ -184,7 +185,10 @@ namespace Nop.Web.Factories
                 CustomOrderNumber = order.CustomOrderNumber,
 
                 //shipping info
-                ShippingStatus = order.ShippingStatus.GetLocalizedEnum(_localizationService, _workContext)
+                ShippingStatus = order.ShippingStatus.GetLocalizedEnum(_localizationService, _workContext),
+
+                InvoiceId = order.InvoiceId
+                
             };
             if (order.ShippingStatus != ShippingStatus.ShippingNotRequired)
             {

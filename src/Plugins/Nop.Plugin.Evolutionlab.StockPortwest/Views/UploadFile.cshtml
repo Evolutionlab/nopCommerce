@@ -1,0 +1,97 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.Controllers
+@using Nop.Core
+@using Nop.Core.Plugins
+
+@inject IPluginFinder pluginFinder
+@inject IWebHelper webHelper
+
+@{
+    var plugin = PluginManager.FindPlugin((this.ViewContext.ActionDescriptor as ControllerActionDescriptor).ControllerTypeInfo).Instance();
+    var friendlyName = plugin?.PluginDescriptor.FriendlyName;
+
+
+    Layout = "_AdminLayout";
+
+    ViewBag.Title = friendlyName;
+
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName(plugin?.PluginDescriptor.SystemName);
+
+}
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+
+<div class="content-header clearfix">
+    <h1>
+        @friendlyName
+    </h1>
+</div>
+<div class="content">
+    <div class="content-header clearfix">
+       
+
+        <form method="post" id="attachment-form" enctype="multipart/form-data">
+            
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Carica il file con le quantità di magazzino
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="label-wrapper">
+                                        <label class="control-label" for="file">Seleziona il file da caricare</label>
+                                        <br>Seleziona il file <strong>.csv</strong> da caricare. Solitamente portwest lo nomina <em><strong>sohEU.csv</strong></em><br><br>
+                                        <strong class="text-warning">Attenzione!</strong><br /> Non  caricare il file .zip scaricato direttamente dal sito portwset, estrai ilfile .csv contenuto e carica quello.<br/><br/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="file" id="file" name="file" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 35px;">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="submit" name="save" id="btnSubmit" class="btn bg-blue" value="Carica e aggiorna quantità" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin: 20px 0;">
+                            <div class="form-group">
+                                    
+                                    @if (!string.IsNullOrWhiteSpace(ViewBag.Errore))
+                                    {
+                                        <label class="text-danger">@Html.Raw(ViewBag.Errore)</label>
+                                    } else if (ViewBag.Aggiornate > 0)
+                                    {
+                                        <label class="text-success">File caricato, aggiornate @ViewBag.Aggiornate combinazioni!</label>
+                                    }
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(window).load(function () {
+        $('.throbber').hide();
+    });
+
+    $("#btnSubmit").click(function () {
+        $('.throbber').show();
+    });
+</script>
+

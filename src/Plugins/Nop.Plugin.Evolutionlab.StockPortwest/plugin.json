@@ -1,0 +1,11 @@
+﻿{
+    "Group": "Evolutionlab",
+    "FriendlyName": "Importazione magazzino Portwest",
+    "SystemName": "Evolutionlab.StockPortwest",
+    "Version": "1.00",
+    "SupportedVersions": [ "4.00" ],
+    "Author": "Evolutionlab",
+    "DisplayOrder": 1,
+    "FileName": "Nop.Plugin.Evolutionlab.StockPortwest.dll",
+    "Description": "Questo plugin permette di aggiornare le rimanenze del sito con il magazzino Portwest"
+}

@@ -2164,7 +2164,7 @@ namespace Nop.Services.Orders
                 counter = counter + 1;
             }
 
-            return string.Format("{0}_{1}", DateTime.UtcNow.Year, counter);
+            return $"{DateTime.UtcNow.Year}_{counter}/T";
         }
 
         /// <summary>

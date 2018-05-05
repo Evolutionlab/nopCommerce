@@ -5,6 +5,9 @@
     ViewBag.Title = T("Admin.ContentManagement.MessageTemplates.EditMessageTemplateDetails").Text;
     //active menu item (system name)
     Html.SetActiveMenuItemSystemName("Message templates");
+	
+	//Allow full page editors
+	ViewData["nop.RichEditor.EnableFullPage"] = "True";
 }
 
 <form asp-controller="MessageTemplate" asp-action="Edit" method="post">

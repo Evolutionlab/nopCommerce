@@ -10,7 +10,7 @@
 <form asp-controller="Customer" asp-action="Edit" method="post">
     <div class="content-header clearfix">
         <h1 class="pull-left">
-            @T("Admin.Customers.Customers.EditCustomerDetails") - @Model.LastName @Model.FirstName
+            @T("Admin.Customers.Customers.EditCustomerDetails") - @Model.LastName @Model.FirstName - <span style="color:red;">@Model.Id</span>
             <small>
                 <i class="fa fa-arrow-circle-left"></i>
                 <a asp-action="List">@T("Admin.Customers.Customers.BackToList")</a>

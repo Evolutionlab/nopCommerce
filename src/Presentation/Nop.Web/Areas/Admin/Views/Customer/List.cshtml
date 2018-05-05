@@ -106,6 +106,41 @@
                                         <nop-editor asp-for="SearchLastName" />
                                     </div>
                                 </div>
+								
+								<!-- ricerca per cliente -->
+                                <div class="form-group">
+                                    <div class="col-md-4">
+										<div class="label-wrapper">
+											<label class="control-label" for="GoDirectlyToId">Vai al codice cliente</label>
+											<div title="Inserire il codice cliente e fare click sul pulsante" class="ico-help">
+											<i class="fa fa-question-circle"></i></div></div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="input-group input-group-short">
+                                            <input class="form-control text-box single-line" id="GoDirectlyToId" name="GoDirectlyToSku" type="text" value="">
+                                            <span class="input-group-btn">
+                                                <button type="button" onclick="document.location.href='/Admin/Customer/Edit/' + document.getElementById('GoDirectlyToId').value;return false;" id="go-to-customer-by-id" name="go-to-customer-by-id" class="btn btn-info btn-flat">
+                                                    @T("Admin.Common.Go")
+                                                </button>
+                                            </span>
+                                        </div>
+										
+										<script>
+const node = document.getElementById("GoDirectlyToId");
+node.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+		event.preventDefault();
+        document.location.href='/Admin/Customer/Edit/' + document.getElementById('GoDirectlyToId').value;
+		return false;
+		
+    }
+})
+										</script>
+										
+                                    </div>
+                                </div>
+								
                                 @if (Model.DateOfBirthEnabled)
                                 {
                                     <div class="form-group">
@@ -272,6 +307,10 @@
                     headerAttributes: { style: "text-align:center" },
                     attributes: { style: "text-align:center" },
                     template: "<input type='checkbox' value='#=Id#' class='checkboxGroups'/>",
+                    width: 50
+                }, {
+                    field: "Id",
+                    title: "Codice",
                     width: 50
                 }, {
                     field: "Email",

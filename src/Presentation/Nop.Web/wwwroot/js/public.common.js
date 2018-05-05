@@ -72,13 +72,19 @@ function displayPopupContentFromUrl(url, title, modal, width) {
     $('<div></div>').load(url)
         .dialog({
             modal: isModal,
-            position: ['center', 20],
+            position: ['center', 100],
             width: targetWidth,
             maxHeight: maxHeight,
             title: title,
             close: function(event, ui) {
                 $(this).dialog('destroy').remove();
-            }
+            },
+			open: function(event, ui) {
+				var dial = $(this)
+				$('.ui-widget-overlay').bind('click', function() {
+					dial.dialog('destroy').remove();
+				})
+			}
         });
 }
 

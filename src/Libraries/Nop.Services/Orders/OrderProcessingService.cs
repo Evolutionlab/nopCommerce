@@ -2164,7 +2164,7 @@ namespace Nop.Services.Orders
                 counter = counter + 1;
             }
 
-            return $"{DateTime.UtcNow.Year}_{counter}/T";
+            return $@"{DateTime.UtcNow.Year}_{counter}/T";
         }
 
         /// <summary>

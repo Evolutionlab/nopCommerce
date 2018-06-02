@@ -10,6 +10,7 @@ using iTextSharp.text.pdf;
 using Nop.Core;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Orders;
@@ -999,6 +1000,17 @@ namespace Nop.Services.Common
             if (_addressSettings.CompanyEnabled && !string.IsNullOrEmpty(order.BillingAddress.Company))
                 billingAddress.AddCell(GetParagraph("PDFInvoice.Company", indent, lang, font, order.BillingAddress.Company));
 
+            //VAT number
+            if (!string.IsNullOrEmpty(order.VatNumber))
+                billingAddress.AddCell(GetParagraph("PDFInvoice.VATNumber", indent, lang, font, order.VatNumber));
+            else
+            {
+                var vatNum = order.Customer.GetAttribute<string>(SystemCustomerAttributeNames.VatNumber);
+
+                if (!string.IsNullOrEmpty(vatNum))
+                    billingAddress.AddCell(GetParagraph("PDFInvoice.VATNumber", indent, lang, font, vatNum));
+            }
+
             billingAddress.AddCell(GetParagraph("PDFInvoice.Name", indent, lang, font, order.BillingAddress.FirstName + " " + order.BillingAddress.LastName));
             if (_addressSettings.PhoneEnabled)
                 billingAddress.AddCell(GetParagraph("PDFInvoice.Phone", indent, lang, font, order.BillingAddress.PhoneNumber));
@@ -1015,10 +1027,6 @@ namespace Nop.Services.Common
             if (_addressSettings.CountryEnabled && order.BillingAddress.Country != null)
                 billingAddress.AddCell(new Paragraph(indent + order.BillingAddress.Country.GetLocalized(x => x.Name, lang.Id),
                     font));
-
-            //VAT number
-            if (!string.IsNullOrEmpty(order.VatNumber))
-                billingAddress.AddCell(GetParagraph("PDFInvoice.VATNumber", indent, lang, font, order.VatNumber));
 
             //custom attributes
             var customBillingAddressAttributes =

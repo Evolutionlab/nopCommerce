@@ -350,6 +350,11 @@ namespace Nop.Core.Domain.Orders
         /// </summary>
         public string InvoiceId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the invoice date for this order
+        /// </summary>
+        public DateTime? InvoiceDate { get; set; }
+
         #endregion
 
         #region Navigation properties

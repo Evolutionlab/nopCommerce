@@ -79,6 +79,8 @@ namespace Nop.Web.Models.Order
 
         public string InvoiceId { get; set; }
 
+        public DateTime? InvoiceDate { get; set; }
+
         #region Nested Classes
 
         public partial class OrderItemModel : BaseNopEntityModel

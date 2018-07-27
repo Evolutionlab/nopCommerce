@@ -56,6 +56,8 @@ namespace Nop.Data.Mapping.Orders
                 .WillCascadeOnDelete(false);
 
             this.Property(o => o.InvoiceId);
+
+            this.Property(o => o.InvoiceDate);
         }
     }
 }

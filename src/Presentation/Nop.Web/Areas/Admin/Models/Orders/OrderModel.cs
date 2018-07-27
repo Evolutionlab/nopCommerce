@@ -227,6 +227,8 @@ namespace Nop.Web.Areas.Admin.Models.Orders
 
         public string InvoiceId { get; set; }
 
+        public DateTime? InvoiceDate { get; set; }
+
         #region Nested Classes
 
         public partial class OrderItemModel : BaseNopEntityModel

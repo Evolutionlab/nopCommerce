@@ -1101,18 +1101,23 @@ namespace Nop.Services.Common
 
             var cellHeader = GetPdfCell(string.Format(_localizationService.GetResource("PDFInvoice.Order#", lang.Id), order.InvoiceId), titleFont);
 
-            var dataFattura = order.CreatedOnUtc;
-            if (order.Shipments.Any())
+            var dataFattura = order.InvoiceDate;
+
+            if (dataFattura == null)
             {
-                var spedizione = order.Shipments.OrderByDescending(x=>x.ShippedDateUtc).FirstOrDefault();
-                if (spedizione!=null && spedizione.ShippedDateUtc.HasValue)
-                    dataFattura = spedizione.ShippedDateUtc.Value;
+                dataFattura = order.CreatedOnUtc;
+                if (order.Shipments.Any())
+                {
+                    var spedizione = order.Shipments.OrderByDescending(x => x.ShippedDateUtc).FirstOrDefault();
+                    if (spedizione != null && spedizione.ShippedDateUtc.HasValue)
+                        dataFattura = spedizione.ShippedDateUtc.Value;
+                }
             }
 
             cellHeader.Phrase.Add(new Phrase(Environment.NewLine));
             cellHeader.Phrase.Add(new Phrase(anchor));
             cellHeader.Phrase.Add(new Phrase(Environment.NewLine));
-            cellHeader.Phrase.Add(GetParagraph("PDFInvoice.OrderDate", lang, font, _dateTimeHelper.ConvertToUserTime(dataFattura, DateTimeKind.Utc).ToString("D", new CultureInfo(lang.LanguageCulture))));
+            cellHeader.Phrase.Add(GetParagraph("PDFInvoice.OrderDate", lang, font, _dateTimeHelper.ConvertToUserTime(dataFattura.Value, DateTimeKind.Utc).ToString("D", new CultureInfo(lang.LanguageCulture))));
             cellHeader.Phrase.Add(new Phrase(Environment.NewLine));
             cellHeader.Phrase.Add(new Phrase(Environment.NewLine));
             cellHeader.HorizontalAlignment = Element.ALIGN_LEFT;

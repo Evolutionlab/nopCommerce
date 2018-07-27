@@ -26,6 +26,7 @@ using Nop.Services;
 using Nop.Services.Affiliates;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
+using Nop.Services.Configuration;
 using Nop.Services.Directory;
 using Nop.Services.Discounts;
 using Nop.Services.ExportImport;
@@ -103,9 +104,11 @@ namespace Nop.Web.Areas.Admin.Controllers
         private readonly MeasureSettings _measureSettings;
         private readonly AddressSettings _addressSettings;
 	    private readonly ShippingSettings _shippingSettings;
-        
+
+        private readonly ISettingService _settingService;
+
         #endregion
-        
+
         #region Ctor
 
         public OrderController(IOrderService orderService, 
@@ -155,7 +158,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             TaxSettings taxSettings,
             MeasureSettings measureSettings,
             AddressSettings addressSettings,
-            ShippingSettings shippingSettings)
+            ShippingSettings shippingSettings,
+            ISettingService settingService)
 		{
             this._orderService = orderService;
             this._orderReportService = orderReportService;
@@ -205,7 +209,9 @@ namespace Nop.Web.Areas.Admin.Controllers
             this._measureSettings = measureSettings;
             this._addressSettings = addressSettings;
             this._shippingSettings = shippingSettings;
-		}
+
+		    this._settingService = settingService;
+        }
         
         #endregion
         
@@ -483,6 +489,8 @@ namespace Nop.Web.Areas.Admin.Controllers
                 throw new Exception("Cannot load primary store currency");
 
             model.InvoiceId = order.InvoiceId;
+
+            model.InvoiceDate = order.InvoiceDate;
 
             //order totals
             PrepareOrderTotals(model, order, primaryStoreCurrency);
@@ -1894,6 +1902,70 @@ namespace Nop.Web.Areas.Admin.Controllers
                 return View(model);
             }
         }
+
+
+        [HttpPost, ActionName("Edit")]
+        [FormValueRequired("btnSaveInvoice")]
+        public virtual IActionResult ChangeInvoice(int id, OrderModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.ManageOrders))
+                return AccessDeniedView();
+
+            var order = _orderService.GetOrderById(id);
+            if (order == null)
+                //No order found with the specified id
+                return RedirectToAction("List");
+
+            //a vendor does not have access to this functionality
+            if (_workContext.CurrentVendor != null)
+                return RedirectToAction("Edit", "Order", new { id = id });
+
+            try
+            {
+                order.InvoiceId = model.InvoiceId;
+                order.InvoiceDate = model.InvoiceDate;
+                _orderService.UpdateOrder(order);
+
+                //add a note
+                order.OrderNotes.Add(new OrderNote
+                {
+                    Note              = $"Order invoice has been edited. New invoice id/date: {order.InvoiceId} - {order.InvoiceDate}",
+                    DisplayToCustomer = false,
+                    CreatedOnUtc      = DateTime.UtcNow
+                });
+                _orderService.UpdateOrder(order);
+                LogEditOrder(order.Id);
+
+                //se il numero attuale è maggiore di quello salvato, aggiorno il setting
+                if (!string.IsNullOrWhiteSpace(order.InvoiceId))
+                {
+                    int numeroAttuale       = Convert.ToInt32(order.InvoiceId.Substring(5).Replace("/T", "").Replace("T", ""));
+                    int ultimoNumeroSetting = Convert.ToInt32(_orderSettings.LastPublishedInvoiceNo.Substring(5).Replace("/T", "").Replace("T", ""));
+
+                    if (numeroAttuale > ultimoNumeroSetting)
+                    {
+                        _orderSettings.LastPublishedInvoiceNo = order.InvoiceId;
+
+                        // Update settings
+                        _settingService.SetSetting<string>("ordersettings.lastpublishedinvoiceno", _orderSettings.LastPublishedInvoiceNo);
+                    }
+                }
+
+
+                model = new OrderModel();
+                PrepareOrderDetailsModel(model, order);
+                return View(model);
+            }
+            catch (Exception exc)
+            {
+                //error
+                model = new OrderModel();
+                PrepareOrderDetailsModel(model, order);
+                ErrorNotification(exc, false);
+                return View(model);
+            }
+        }
+
 
         #endregion
 

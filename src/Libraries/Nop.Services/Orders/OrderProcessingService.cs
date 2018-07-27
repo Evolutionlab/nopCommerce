@@ -2136,7 +2136,7 @@ namespace Nop.Services.Orders
             //check order status
             CheckOrderStatus(order);
 
-            // Add invoiceId to order, ensure that invoiceId is updated once
+            //add invoiceId to order, ensure that invoiceId is updated once
             if (string.IsNullOrEmpty(order.InvoiceId))
             {
                 order.InvoiceId = GetNewInvoiceNo();
@@ -2145,15 +2145,20 @@ namespace Nop.Services.Orders
                 _settingService.SetSetting<string>("ordersettings.lastpublishedinvoiceno", _orderSettings.LastPublishedInvoiceNo);
             }
 
-        }
+            //add invoiceDate, ensure that invoiceDate is update once
+            if (order.InvoiceDate == null)
+            {
+                order.InvoiceDate = shipment.ShippedDateUtc;
+            }
 
+        }
 
         /// <summary>
         /// Generate a progressive invoice number
         /// </summary>
-        private string GetNewInvoiceNo()
+        public virtual string GetNewInvoiceNo()
         {
-            int counter = Convert.ToInt32(_orderSettings.LastPublishedInvoiceNo.Substring(5));
+            int counter = Convert.ToInt32(_orderSettings.LastPublishedInvoiceNo.Substring(5).Replace("/T","").Replace("T", ""));
             if (!_orderSettings.LastPublishedInvoiceNo.Contains(DateTime.UtcNow.Year.ToString()))
             {
                 // Reset counter if a new year

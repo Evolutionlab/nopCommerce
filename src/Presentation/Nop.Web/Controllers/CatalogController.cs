@@ -16,6 +16,7 @@ using Nop.Web.Factories;
 using Nop.Web.Framework;
 using Nop.Web.Framework.Mvc.Filters;
 using Nop.Web.Framework.Security;
+using Nop.Web.Infrastructure;
 using Nop.Web.Models.Catalog;
 
 namespace Nop.Web.Controllers
@@ -259,6 +260,8 @@ namespace Nop.Web.Controllers
 
             if (model == null)
                 model = new SearchModel();
+
+            model.q = StopWordProvider.RemoveStopwords(model.q);
 
             model = _catalogModelFactory.PrepareSearchModel(model, command);
             return View(model);

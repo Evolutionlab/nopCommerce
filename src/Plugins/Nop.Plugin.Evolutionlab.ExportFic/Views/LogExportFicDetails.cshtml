@@ -59,7 +59,7 @@
                                                     OrdineId : { editable: false, type: "number" },
                                                     Errore : { editable: false, type: "boolean" },
                                                     Token : { editable: false, type: "string" },
-                                                    Messaggio: { editable: false, type: "number" },
+                                                    Messaggio: { editable: false, type: "string" },
                                                     TotaleDb : { editable: false, type: "number" },
                                                     TotaleEsportato : { editable: false, type: "number" }
                                                 }
@@ -90,16 +90,8 @@
 									},
                                     scrollable: false,
                                     columns: [{
-                                        field: "Id",
-                                        title: "id",
-                                        width: 50
-                                    },{
-                                        field: "Tipo",
-                                        title: "Tipo",
-                                        width: 80
-                                    }, {
                                         field: "OrdineId",
-                                        title: "OrdineId",
+                                        title: "Ordine",
                                         width: 80
                                     }, {
                                         field: "Errore",
@@ -115,11 +107,11 @@
                                         width: 300
                                     }, {
                                         field: "TotaleDb",
-                                        title: "TotaleDb",
+                                        title: "Totale Nop",
                                         width: 100
                                     }, {
                                         field: "TotaleEsportato",
-                                        title: "TotaleEsportato",
+                                        title: "Totale Fic",
                                         width: 100
                                     }, {
                                         command: [{

@@ -285,10 +285,7 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
                                  orderModel.MetodoPagamento.Contains("Carta di credito")
                             ? orderModel.MetodoPagamento
                             : "not",
-                        DataSaldo = orderModel.MetodoPagamento.Contains("PayPal") ||
-                                    orderModel.MetodoPagamento.Contains("Carta di credito")
-                            ? ordine.CreatedOnUtc.ToString("dd/MM/yyyy")
-                            : ""
+                        DataSaldo = ordine.CreatedOnUtc.ToString("dd/MM/yyyy")
                     }
                 };
 

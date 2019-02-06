@@ -126,12 +126,11 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
 
                 var orderModel = new DocRequest
                 {
-                    ApiUid = _ficSettings.ApiUid,
-                    ApiKey = _ficSettings.ApiKey,
-                    Id     = "",
-                    Token  = "",
-                    Nome =
-                        billingAddress.Company.ToNotNull($"{billingAddress.FirstName} {billingAddress.LastName}"),
+                    ApiUid                = _ficSettings.ApiUid,
+                    ApiKey                = _ficSettings.ApiKey,
+                    Id                    = "",
+                    Token                 = "",
+                    Nome                  = billingAddress.Company.ToNotNull($"{billingAddress.FirstName} {billingAddress.LastName}"),
                     IndirizzoVia          = $"{billingAddress.Address1} {billingAddress.Address2}".Trim(),
                     IndirizzoCap          = billingAddress.ZipPostalCode,
                     IndirizzoCitta        = billingAddress.City,
@@ -142,6 +141,7 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
                     Cf                    = ordine.VatNumber,
                     AutocompilaAnagrafica = false,
                     SalvaAnagrafica       = true,
+                    Numero                = _ficSettings.Numerazione, 
                     Data                  = ordine.CreatedOnUtc.ToString("dd/MM/yyyy"),
                     Valuta                = "EUR",
                     ValutaCambio          = 1,

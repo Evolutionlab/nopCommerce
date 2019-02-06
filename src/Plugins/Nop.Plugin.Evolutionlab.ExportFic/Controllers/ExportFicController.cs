@@ -36,13 +36,28 @@ namespace Nop.Plugin.Evolutionlab.ExportFic.Controllers
 
         public IActionResult Configure()
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings) || 
-                _permissionService.Authorize(StandardPermissionProvider.ManageOrders) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageTaxSettings))
-                return Content("Access denied");
+            if (UserNotEnabled())
+                return AccessDeniedView();
 
             CommonHelper.SetTelerikCulture();
             return View("~/Plugins/Evolutionlab.ExportFic/Views/Configure.cshtml", _ficSettings);
+        }
+
+        [HttpPost]
+        [FormValueRequired("save")]
+        public IActionResult Configure(FicSettings model)
+        {
+            if (UserNotEnabled())
+                return AccessDeniedView();
+
+            if (!ModelState.IsValid)
+                return Configure();
+
+            //save settings
+            _settingService.SaveSetting(model);
+
+            //redisplay the form
+            return Configure();
         }
 
         public IActionResult LogExportFicDetails()
@@ -54,9 +69,7 @@ namespace Nop.Plugin.Evolutionlab.ExportFic.Controllers
         [AdminAntiForgery]
         public IActionResult LogExportFicList(DataSourceRequest command)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageOrders) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageTaxSettings))
+            if (UserNotEnabled())
                 return AccessDeniedKendoGridJson();
 
             var lista = _logExportFicService.GetAll();
@@ -71,9 +84,7 @@ namespace Nop.Plugin.Evolutionlab.ExportFic.Controllers
         [AdminAntiForgery]
         public IActionResult LogExportFicDelete(int id)
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageOrders) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageTaxSettings))
+            if (UserNotEnabled())
                 return AccessDeniedKendoGridJson();
 
             _logExportFicService.Delete(id);
@@ -81,20 +92,11 @@ namespace Nop.Plugin.Evolutionlab.ExportFic.Controllers
             return new NullJsonResult();
         }
 
-        [HttpPost]
-        [AdminAntiForgery]
-        public IActionResult SaveGeneralSettings(FicSettings model)
+        private bool UserNotEnabled()
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.ManageSettings) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageOrders) ||
-                _permissionService.Authorize(StandardPermissionProvider.ManageTaxSettings))
-                return Content("Access denied");
-
-            _settingService.SaveSetting(model);
-            return Json(new
-            {
-                Result = true
-            });
+            return !_permissionService.Authorize(StandardPermissionProvider.ManageSettings) &&
+                   !_permissionService.Authorize(StandardPermissionProvider.ManageOrders) &&
+                   !_permissionService.Authorize(StandardPermissionProvider.ManageTaxSettings);
         }
 
     }

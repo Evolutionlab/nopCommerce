@@ -26,22 +26,22 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <div id="tax-countrystatezip-grid"></div>
+                <div id="log-grid"></div>
 
                 <script>
                             $(document).ready(function () {
-                                $("#tax-countrystatezip-grid").kendoGrid({
+                                $("#log-grid").kendoGrid({
                                     dataSource: {
                                         type: "json",
                                         transport: {
                                             read: {
-                                                url: "@Html.Raw(Url.Action("LogExportFicList", "ExportFicController"))",
+                                                url: "@Html.Raw(Url.Action("LogExportFicList"))",
                                                 type: "POST",
                                                 dataType: "json",
                                                 data: addAntiForgeryToken
                                             },
                                             destroy: {
-                                                url: "@Html.Raw(Url.Action("LogExportFicDelete", "ExportFicController"))",
+                                                url: "@Html.Raw(Url.Action("LogExportFicDelete"))",
                                                 type: "POST",
                                                 dataType: "json",
                                                 data: addAntiForgeryToken
@@ -84,10 +84,10 @@
                                         pageSizes: [@(gridPageSizes)],
                                         @await Html.PartialAsync("~/Areas/Admin/Views/Shared/_GridPagerMessages.cshtml")
                                     },
-                                    editable: {
-                                        confirmation: false,
-                                        mode: "inline"
-                                    },
+									editable: {
+										confirmation: "@T("Admin.Common.DeleteConfirmation")",
+										mode: "inline"
+									},
                                     scrollable: false,
                                     columns: [{
                                         field: "Id",
@@ -117,7 +117,7 @@
                                         field: "TotaleDb",
                                         title: "TotaleDb",
                                         width: 100
-                                    },, {
+                                    }, {
                                         field: "TotaleEsportato",
                                         title: "TotaleEsportato",
                                         width: 100
@@ -126,7 +126,7 @@
                                             name: "destroy",
                                             text: "@T("Admin.Common.Delete")"
                                         }],
-                                        width: 200
+                                        width: 100
                                     }]
                                 });
                             });

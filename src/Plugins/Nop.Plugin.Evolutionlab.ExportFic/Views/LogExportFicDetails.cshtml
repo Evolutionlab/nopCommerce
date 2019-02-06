@@ -1,0 +1,139 @@
+﻿@model Nop.Plugin.Evolutionlab.ExportFic.Models.FicSettings
+@using Nop.Core.Domain.Common
+@using Nop.Core.Infrastructure;
+@inject AdminAreaSettings adminAreaSettings
+
+@{
+    Layout = "_AdminLayout";
+
+    var defaultGridPageSize = adminAreaSettings.DefaultGridPageSize;
+    var gridPageSizes = adminAreaSettings.GridPageSizes;
+}
+
+
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        Log Esportazione Fatture in Cloud
+    </h1>
+</div>
+
+
+<div class="content">
+
+    <div class="panel-group form-horizontal">
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div id="tax-countrystatezip-grid"></div>
+
+                <script>
+                            $(document).ready(function () {
+                                $("#tax-countrystatezip-grid").kendoGrid({
+                                    dataSource: {
+                                        type: "json",
+                                        transport: {
+                                            read: {
+                                                url: "@Html.Raw(Url.Action("LogExportFicList", "ExportFicController"))",
+                                                type: "POST",
+                                                dataType: "json",
+                                                data: addAntiForgeryToken
+                                            },
+                                            destroy: {
+                                                url: "@Html.Raw(Url.Action("LogExportFicDelete", "ExportFicController"))",
+                                                type: "POST",
+                                                dataType: "json",
+                                                data: addAntiForgeryToken
+                                            }
+                                        },
+                                        schema: {
+                                            data: "Data",
+                                            total: "Total",
+                                            errors: "Errors",
+                                            model: {
+                                                id: "Id",
+                                                fields: {
+                                                    Data : { editable: false, type: "datetime" },
+                                                    Tipo : { editable: false, type: "string" },
+                                                    OrdineId : { editable: false, type: "number" },
+                                                    Errore : { editable: false, type: "boolean" },
+                                                    Token : { editable: false, type: "string" },
+                                                    Messaggio: { editable: false, type: "number" },
+                                                    TotaleDb : { editable: false, type: "number" },
+                                                    TotaleEsportato : { editable: false, type: "number" }
+                                                }
+                                            },
+                                        },
+                                        requestEnd: function (e) {
+                                            if (e.type == "update") {
+                                                this.read();
+                                            }
+                                        },
+                                        error: function (e) {
+                                            display_kendoui_grid_error(e);
+                                            this.cancelChanges();
+                                        },
+                                        pageSize: @(defaultGridPageSize),
+                                        serverPaging: true,
+                                        serverFiltering: true,
+                                        serverSorting: true
+                                    },
+                                    pageable: {
+                                        refresh: true,
+                                        pageSizes: [@(gridPageSizes)],
+                                        @await Html.PartialAsync("~/Areas/Admin/Views/Shared/_GridPagerMessages.cshtml")
+                                    },
+                                    editable: {
+                                        confirmation: false,
+                                        mode: "inline"
+                                    },
+                                    scrollable: false,
+                                    columns: [{
+                                        field: "Id",
+                                        title: "id",
+                                        width: 50
+                                    },{
+                                        field: "Tipo",
+                                        title: "Tipo",
+                                        width: 80
+                                    }, {
+                                        field: "OrdineId",
+                                        title: "OrdineId",
+                                        width: 80
+                                    }, {
+                                        field: "Errore",
+                                        title: "Errore",
+                                        width: 50
+                                    }, {
+                                        field: "Token",
+                                        title: "Token",
+                                        width: 200
+                                    }, {
+                                        field: "Messaggio",
+                                        title: "Messaggio",
+                                        width: 300
+                                    }, {
+                                        field: "TotaleDb",
+                                        title: "TotaleDb",
+                                        width: 100
+                                    },, {
+                                        field: "TotaleEsportato",
+                                        title: "TotaleEsportato",
+                                        width: 100
+                                    }, {
+                                        command: [{
+                                            name: "destroy",
+                                            text: "@T("Admin.Common.Delete")"
+                                        }],
+                                        width: 200
+                                    }]
+                                });
+                            });
+                </script>
+
+            </div>
+        </div>
+
+    </div>
+</div>

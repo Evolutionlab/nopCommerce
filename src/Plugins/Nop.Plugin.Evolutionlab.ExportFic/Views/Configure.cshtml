@@ -1,0 +1,76 @@
+﻿@model Nop.Plugin.Evolutionlab.ExportFic.Models.FicSettings
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        Configurazione FattureInCloud
+    </h1>
+</div>
+
+
+<div class="content">
+
+    <div class="panel-group form-horizontal">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" for="ApiUid">API UID</label>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="ApiUid" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" for="ApiKey">API KEY</label>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="ApiKey" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" for="BaseUrlPost">URL API</label>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="BaseUrlPost" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" for="Numerazione">Numerazione</label>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Numerazione" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" for="Attivo">Attiva</label>
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Attivo" />
+                        </div>
+                    </div>
+
+
+                }
+            </div>
+        </div>
+    </div>
+</div>

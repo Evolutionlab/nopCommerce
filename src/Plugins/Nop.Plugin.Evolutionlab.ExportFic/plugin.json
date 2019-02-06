@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Evolutionlab",
+  "FriendlyName": "Esportazione FattureInCloud",
+  "SystemName": "Evolutionlab.ExportFic",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.00" ],
+  "Author": "Evolutionlab",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Evolutionlab.ExportFic.dll",
+  "Description": "Questo plugin permette di creare le fatture in FattureInCloud per gli ordini nopcommerce"
+}

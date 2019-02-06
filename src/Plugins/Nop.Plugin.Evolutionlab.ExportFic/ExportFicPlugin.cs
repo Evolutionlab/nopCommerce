@@ -147,7 +147,7 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
                     ValutaCambio          = 1,
                     PrezziIvati           = true,
                     OggettoVisibile       = $"Ordine sito: {ordine.Id}",
-                    OggettoInterno        = $"Sito: topbuyer.it",
+                    OggettoInterno        = $"Sito: www.topbuyer.it",
                     MostraInfoPagamento   = true,
                     MetodoPagamento       = GetPaymentMethodSlug(ordine.PaymentMethodSystemName),
                     ExtraAnagrafica = new ExtraAnagrafica
@@ -281,11 +281,8 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
                     {
                         DataScadenza = ordine.CreatedOnUtc.ToString("dd/MM/yyyy"),
                         Importo      = totaleOrdine,
-                        Metodo = orderModel.MetodoPagamento.Contains("PayPal") ||
-                                 orderModel.MetodoPagamento.Contains("Carta di credito")
-                            ? orderModel.MetodoPagamento
-                            : "not",
-                        DataSaldo = ordine.CreatedOnUtc.ToString("dd/MM/yyyy")
+                        Metodo       = orderModel.MetodoPagamento,
+                        DataSaldo    = ordine.CreatedOnUtc.ToString("dd/MM/yyyy")
                     }
                 };
 
@@ -310,7 +307,7 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
                     //    ordine.ClienteFatInCloud = clienteFatInCloud.Id;
 
                     ordine.InvoiceDate = adesso;
-                    ordine.InvoiceId = response.NewOrderId.ToString();
+                    ordine.InvoiceId = GetNewInvoiceNumber(response.NewOrderId.ToString());
                     //ordine.TotaleFatInCloud = totaleOrdine;
 
                     try
@@ -357,7 +354,6 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
                 }
 
             }
-
         }
 
         private DocNuovoResponse ExecuteExport(DocRequest docRequest, bool modifica, out string errore)
@@ -384,6 +380,43 @@ namespace Nop.Plugin.Evolutionlab.ExportFic
             {
                 errore = e.Message;
                 return null;
+            }
+        }
+
+        private string GetNewInvoiceNumber(string newOrderId)
+        {
+            //recupero il numero fattura
+            var richiesta = new DocDettagliRequest
+            {
+                ApiUid = _ficSettings.ApiUid,
+                ApiKey = _ficSettings.ApiKey,
+                Id     = newOrderId
+            };
+
+            var content = new StringContent(JsonConvert.SerializeObject(richiesta, Formatting.None));
+            //errore = "";
+
+            try
+            {
+                var response = _httpClient
+                    .PostAsync($"{_ficSettings.BaseUrlPost}/fatture/dettagli", content)
+                    .Result;
+
+                var docResponseString = JsonConvert.DeserializeObject<DocDettagliResponse>(response.Content.ReadAsStringAsync().Result);
+
+                if (docResponseString == null || docResponseString.Success == false)
+                {
+                    //errore = response.Content.ReadAsStringAsync().Result;
+                    return "";
+                }
+
+                return docResponseString.DettagliDocumento.Numero;
+
+            }
+            catch (Exception e)
+            {
+                //errore = e.Message;
+                return "";
             }
         }
 
